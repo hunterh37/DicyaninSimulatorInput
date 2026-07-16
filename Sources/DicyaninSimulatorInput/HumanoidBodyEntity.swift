@@ -134,12 +134,14 @@ public struct HumanoidBodySystem: System {
     private func apply(_ joints: [ARKitBodyJoint: SIMD3<Float>],
                        hands: MockHandTrackingController,
                        to root: HumanoidBodyEntity) {
-        guard let hips = joints[.hips] else {
+        guard let hips = joints[.hips], Self.isValid(hips) else {
             for rig in root.handRigs { rig.hide() }
             return
         }
         let humanoid = root.humanoid
-        humanoid.position = hips + root.worldOffset - [0, Self.hipHeight, 0]
+        let targetPosition = hips + root.worldOffset - [0, Self.hipHeight, 0]
+        humanoid.position = simd_mix(humanoid.position, targetPosition,
+                                     SIMD3<Float>(repeating: Self.smoothing))
 
         // Data joints per geometry side. mirrored swaps the person's sides.
         let leftArmData: (ARKitBodyJoint, ARKitBodyJoint) =
@@ -204,8 +206,23 @@ public struct HumanoidBodySystem: System {
         }
     }
 
-    /// Rotates one joint pivot so its bone (rest direction `rest` in the
-    /// figure's root space) points along the received `from -> to` direction.
+    /// Per-frame slerp/lerp factor toward the target pose.
+    private static let smoothing: Float = 0.35
+
+    /// A body joint is considered tracked when it isn't the zero vector the
+    /// mappers emit for undetected joints. (The head is the frame origin, but
+    /// it is never used as a bone endpoint here.)
+    private static func isValid(_ p: SIMD3<Float>) -> Bool {
+        simd_length_squared(p) > 1e-6
+    }
+
+    /// Rotates one joint pivot so its bone (rest direction `rest`, expressed in
+    /// the parent joint's frame) points along the received `from -> to`
+    /// direction. The target is computed as a minimal-twist rotation inside the
+    /// parent frame, so a bent elbow or knee hinges naturally instead of
+    /// twisting the segment. Missing or untracked endpoints ease the joint back
+    /// to its rest orientation (straight down for limbs), and every update is
+    /// slerp-smoothed so tracking dropouts never snap the figure.
     /// Returns the joint's accumulated world rotation for child pivots.
     @MainActor
     @discardableResult
@@ -215,14 +232,22 @@ public struct HumanoidBodySystem: System {
                         to: SIMD3<Float>?,
                         rest: SIMD3<Float>,
                         parentWorld: simd_quatf) -> simd_quatf {
-        guard let joint = humanoid.findEntity(named: name),
-              let from, let to else { return parentWorld }
-        let delta = to - from
-        let length = simd_length(delta)
-        guard length > 0.001 else { return parentWorld }
-        let world = Self.quatAligning(rest, delta / length)
-        joint.orientation = parentWorld.inverse * world
-        return world
+        guard let joint = humanoid.findEntity(named: name) else { return parentWorld }
+
+        var targetLocal = simd_quatf(angle: 0, axis: [0, 1, 0])  // rest pose
+        if let from, let to, Self.isValid(from), Self.isValid(to) {
+            let delta = to - from
+            let length = simd_length(delta)
+            if length > 0.001 {
+                // Express the bone direction in the parent joint's frame and
+                // align with a minimal arc there: no world-space twist leaks
+                // into the segment when the chain above it rotates.
+                let dirInParent = parentWorld.inverse.act(delta / length)
+                targetLocal = Self.quatAligning(rest, dirInParent)
+            }
+        }
+        joint.orientation = simd_slerp(joint.orientation, targetLocal, Self.smoothing)
+        return parentWorld * joint.orientation
     }
 
     /// Minimal-arc quaternion rotating unit vector `a` onto unit vector `b`.
