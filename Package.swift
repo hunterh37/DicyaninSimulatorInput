@@ -18,8 +18,8 @@ let package = Package(
         .library(name: "DicyaninSimulatorInput", targets: ["DicyaninSimulatorInput"])
     ],
     dependencies: [
-        .package(path: "../DicyaninLabsMoCapRecording"),
-        .package(path: "../DicyaninMockHandTracking")
+        .package(url: "https://github.com/hunterh37/DicyaninLabsMoCapRecording.git", from: "1.7.2"),
+        .package(url: "https://github.com/hunterh37/DicyaninMockHandTracking.git", from: "3.10.0")
     ],
     targets: [
         .target(
