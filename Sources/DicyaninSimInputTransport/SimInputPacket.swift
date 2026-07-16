@@ -23,12 +23,20 @@ public struct SimInputPacket: Codable, Sendable, Equatable {
     public var bodyJoints: [SIMD3<Float>]?
     public var bodyTracked: Bool
 
+    /// Smoothed displacement of the person's head from where they were first
+    /// detected, in the same axes as the head-relative joints. Lets the
+    /// consumer move the rendered body around the room as the person moves
+    /// through the camera frame. `nil` when the runner doesn't track it.
+    public var rootOffset: SIMD3<Float>?
+
     public init(hands: HandPosePacket,
                 bodyJoints: [SIMD3<Float>]? = nil,
-                bodyTracked: Bool = false) {
+                bodyTracked: Bool = false,
+                rootOffset: SIMD3<Float>? = nil) {
         self.hands = hands
         self.bodyJoints = bodyJoints
         self.bodyTracked = bodyTracked
+        self.rootOffset = rootOffset
     }
 
     /// Rebuild the keyed dictionary from the flat wire order.
@@ -42,7 +50,7 @@ public struct SimInputPacket: Codable, Sendable, Equatable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case h, bj, bt
+        case h, bj, bt, ro
     }
 
     public init(from decoder: Decoder) throws {
@@ -57,6 +65,11 @@ public struct SimInputPacket: Codable, Sendable, Equatable {
         } else {
             bodyJoints = nil
         }
+        if let ro = try c.decodeIfPresent([Float].self, forKey: .ro), ro.count == 3 {
+            rootOffset = SIMD3(ro[0], ro[1], ro[2])
+        } else {
+            rootOffset = nil
+        }
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -68,6 +81,9 @@ public struct SimInputPacket: Codable, Sendable, Equatable {
             flat.reserveCapacity(bodyJoints.count * 3)
             for j in bodyJoints { flat.append(contentsOf: [j.x, j.y, j.z]) }
             try c.encode(flat, forKey: .bj)
+        }
+        if let rootOffset {
+            try c.encode([rootOffset.x, rootOffset.y, rootOffset.z], forKey: .ro)
         }
     }
 }

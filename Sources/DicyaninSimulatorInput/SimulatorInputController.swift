@@ -32,6 +32,13 @@ public final class SimulatorInputController: ObservableObject {
     /// Latest head-relative body joint positions, keyed by joint.
     @Published public private(set) var bodyJoints: [ARKitBodyJoint: SIMD3<Float>] = [:]
 
+    /// Smoothed displacement of the tracked person from where they were first
+    /// detected, in the same axes as `bodyJoints`. Add it to a body
+    /// representation's placement so the figure walks around the room with the
+    /// person instead of staying pinned at the origin. Zero until a runner
+    /// that sends it connects.
+    @Published public private(set) var bodyRootOffset: SIMD3<Float> = .zero
+
     /// Whether received hand packets should be forwarded into
     /// `MockHandTrackingController.shared`. On by default.
     public var drivesMockHands = true
@@ -84,6 +91,9 @@ public final class SimulatorInputController: ObservableObject {
         isBodyTracked = packet.bodyTracked
         if let joints = packet.bodyJointsByID() {
             bodyJoints = joints
+        }
+        if packet.bodyTracked, let offset = packet.rootOffset {
+            bodyRootOffset = offset
         }
         if drivesMockHands {
             MockHandTrackingController.shared.apply(packet.hands)

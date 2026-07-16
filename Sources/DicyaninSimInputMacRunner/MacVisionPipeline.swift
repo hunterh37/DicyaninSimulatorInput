@@ -2,6 +2,7 @@ import Foundation
 import simd
 import CoreGraphics
 import DicyaninLabsMoCapRecording
+import DicyaninSimInputTransport
 
 #if os(macOS)
 import AVFoundation
@@ -11,6 +12,7 @@ import Vision
 /// normalized overlay geometry for the runner UI.
 struct MacVisionFrame {
     var bodyJoints: [SIMD3<Float>]?
+    var rootOffset: SIMD3<Float>?
     var bodyOverlay: [VNHumanBodyPose3DObservation.JointName: CGPoint]
     var hands: [MacDetectedHand]
     var frameSize: CGSize
@@ -37,6 +39,8 @@ final class MacVisionPipeline: NSObject, AVCaptureVideoDataOutputSampleBufferDel
     private var lastBodyJoints: [SIMD3<Float>]?
     private var lastBodyOverlay: [VNHumanBodyPose3DObservation.JointName: CGPoint] = [:]
     private var lastFrame: MacBodyMapper.Frame?
+    private var rootTracker = SimInputRootTracker()
+    private var lastRootOffset: SIMD3<Float>?
 
     private let handRequest: VNDetectHumanHandPoseRequest = {
         let r = VNDetectHumanHandPoseRequest()
@@ -71,12 +75,23 @@ final class MacVisionPipeline: NSObject, AVCaptureVideoDataOutputSampleBufferDel
                 if let frame = MacBodyMapper.frame(cameraJoints: cameraJoints) {
                     lastFrame = frame
                     lastBodyJoints = MacBodyMapper.mapBody(cameraJoints: cameraJoints, frame: frame)
+                    // Person translation through the room: head position
+                    // projected onto the axes captured at first detection,
+                    // same mirror convention as the joints.
+                    lastRootOffset = rootTracker.update(position: frame.origin,
+                                                        xAxis: frame.right,
+                                                        yAxis: frame.up,
+                                                        zAxis: frame.forward)
                 } else {
                     lastBodyJoints = nil
+                    lastRootOffset = nil
+                    rootTracker.reset()
                 }
                 lastBodyOverlay = MacBodyMapper.overlayPoints(body, mirrored: mirrored)
             } else {
                 lastBodyJoints = nil
+                lastRootOffset = nil
+                rootTracker.reset()
                 lastBodyOverlay = [:]
             }
         }
@@ -93,6 +108,7 @@ final class MacVisionPipeline: NSObject, AVCaptureVideoDataOutputSampleBufferDel
 
         onFrame?(MacVisionFrame(
             bodyJoints: lastBodyJoints,
+            rootOffset: lastRootOffset,
             bodyOverlay: lastBodyOverlay,
             hands: hands,
             frameSize: CGSize(width: w, height: h)))

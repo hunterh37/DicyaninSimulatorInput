@@ -46,6 +46,8 @@ public final class SimInputBroadcaster: ObservableObject {
 
     // Latest mapped state, held between updates so every packet is complete.
     private var latestFrame: PersonFrameMapper.Frame?
+    private var rootTracker = SimInputRootTracker()
+    private var lastRootOffset: SIMD3<Float>?
     private var lastLeftPosition: SIMD3<Float> = [-0.22, -0.26, -0.72]
     private var lastRightPosition: SIMD3<Float> = [0.22, -0.26, -0.72]
 
@@ -111,6 +113,18 @@ public final class SimInputBroadcaster: ObservableObject {
             bodyWorldJoints: snapshot.worldJoints,
             cameraTransform: snapshot.camera.transform
         )
+        // Person translation through the room: head world position projected
+        // onto the axes captured at first detection, matching the joint
+        // mapping convention (z = -forward).
+        if isBodyTracked, let frame = latestFrame {
+            lastRootOffset = rootTracker.update(position: frame.origin,
+                                                xAxis: frame.right,
+                                                yAxis: frame.up,
+                                                zAxis: -frame.forward)
+        } else {
+            lastRootOffset = nil
+            rootTracker.reset()
+        }
         broadcastIfDue()
     }
 
@@ -149,7 +163,8 @@ public final class SimInputBroadcaster: ObservableObject {
         sender.broadcast(SimInputPacket(
             hands: hands,
             bodyJoints: body,
-            bodyTracked: isBodyTracked
+            bodyTracked: isBodyTracked,
+            rootOffset: lastRootOffset
         ))
     }
 }

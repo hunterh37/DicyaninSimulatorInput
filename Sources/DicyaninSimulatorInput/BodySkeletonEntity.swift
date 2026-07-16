@@ -66,15 +66,17 @@ public struct BodySkeletonSystem: System {
 
     public func update(context: SceneUpdateContext) {
         let joints = SimulatorInputController.shared.bodyJoints
+        let rootOffset = SimulatorInputController.shared.bodyRootOffset
         for entity in context.entities(matching: Self.query, updatingSystemWhen: .rendering) {
             guard let skeleton = entity as? BodySkeletonEntity else { continue }
-            apply(joints, to: skeleton)
+            apply(joints, rootOffset: rootOffset, to: skeleton)
         }
     }
 
     private func apply(_ joints: [ARKitBodyJoint: SIMD3<Float>],
+                       rootOffset: SIMD3<Float>,
                        to skeleton: BodySkeletonEntity) {
-        let offset = skeleton.worldOffset
+        let offset = skeleton.worldOffset + rootOffset
         for (joint, sphere) in skeleton.jointSpheres {
             if let p = joints[joint] {
                 sphere.position = p + offset

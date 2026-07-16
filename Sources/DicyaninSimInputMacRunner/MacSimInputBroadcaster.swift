@@ -195,7 +195,8 @@ public final class MacSimInputBroadcaster: ObservableObject {
         sender.broadcast(SimInputPacket(
             hands: handsPacket,
             bodyJoints: frame.bodyJoints,
-            bodyTracked: frame.bodyJoints != nil))
+            bodyTracked: frame.bodyJoints != nil,
+            rootOffset: frame.rootOffset))
     }
 
     private func startFPSTimer() {

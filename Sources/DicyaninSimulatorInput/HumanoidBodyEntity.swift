@@ -140,6 +140,7 @@ public struct HumanoidBodySystem: System {
         }
         let humanoid = root.humanoid
         let targetPosition = hips + root.worldOffset - [0, Self.hipHeight, 0]
+            + SimulatorInputController.shared.bodyRootOffset
         humanoid.position = simd_mix(humanoid.position, targetPosition,
                                      SIMD3<Float>(repeating: Self.smoothing))
 
