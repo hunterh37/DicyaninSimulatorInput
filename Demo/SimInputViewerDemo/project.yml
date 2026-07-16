@@ -2,7 +2,7 @@ name: SimInputViewerDemo
 options:
   bundleIdPrefix: com.dicyaninlabs
   deploymentTarget:
-    visionOS: "1.0"
+    visionOS: "2.0"
 packages:
   DicyaninSimulatorInput:
     path: ../../
@@ -13,7 +13,7 @@ targets:
   SimInputViewerDemo:
     type: application
     platform: visionOS
-    deploymentTarget: "1.0"
+    deploymentTarget: "2.0"
     sources:
       - Sources
     dependencies:

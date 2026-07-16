@@ -9,6 +9,7 @@ struct SimInputViewerControlView: View {
 
     @ObservedObject private var controller = SimulatorInputController.shared
     @ObservedObject private var mockHands = MockHandTrackingController.shared
+    @ObservedObject private var settings = ViewerSceneSettings.shared
 
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
@@ -87,7 +88,11 @@ struct SimInputViewerControlView: View {
                     }
                 }
             }
-            Text("Skeleton wireframe plus gloves on both hands, driven by the iPhone runner.")
+            Toggle("3D humanoid figure", isOn: $settings.useHumanoid)
+                .toggleStyle(.switch)
+            Text(settings.useHumanoid
+                 ? "3D humanoid (DicyaninHumanoidMesh) retargeted from the full body + hand stream, mirroring your movement."
+                 : "Stick-figure wireframe plus gloves on both hands, driven by the runner.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

@@ -12,7 +12,7 @@ Built from proven pieces:
 - `DicyaninSimInputTransport`: `SimInputPacket` (body joints in `ARKitBodyJoint.allCases` order + embedded `HandPosePacket`), `SimInputSender`, `SimInputReceiver`. iOS, visionOS, macOS.
 - `DicyaninSimInputRunner` (iOS): `SimInputBroadcaster` (capture + broadcast) and `SimInputRunnerView` (camera preview, wireframe overlays, server status).
 - `DicyaninSimInputMacRunner` (macOS 14+): `MacSimInputBroadcaster` (webcam + Vision 3D body pose + hand pose, broadcast) and `SimInputMacRunnerView` (preview, overlays, tuning). No iPhone needed: everything runs on the Mac next to the simulator.
-- `DicyaninSimulatorInput` (visionOS): `SimulatorInputController.shared` (receive + feed `MockHandTrackingController`) and `BodySkeletonEntity` (ECS-driven debug skeleton).
+- `DicyaninSimulatorInput` (visionOS): `SimulatorInputController.shared` (receive + feed `MockHandTrackingController`), `BodySkeletonEntity` (ECS-driven debug skeleton), and `HumanoidBodyEntity` (3D humanoid from DicyaninHumanoidMesh, retargeted per frame from the full body + hand stream so it mirrors the tracked person).
 
 ## iPhone runner app
 
@@ -44,7 +44,7 @@ Stand back far enough that the camera sees your whole body for body tracking; ha
 
 ## visionOS viewer app
 
-See `Demo/SimInputViewerDemo`: a full demo scene integrating every package output. Control window with Bonjour/manual connect and live status, plus an immersive space containing `BodySkeletonEntity` (body wireframe), `HandGloveView.addHands` gloves driven through `MockHandTrackingController`, and a pinch-reactive target sphere showing gameplay logic on the same input path. Create a visionOS App target, add the `DicyaninSimulatorInput` product plus `DicyaninMockHandTracking` and `DicyaninHandGlove` from DicyaninMockHandTracking, drop the files in, and set Info.plist keys `NSLocalNetworkUsageDescription` and `NSBonjourServices` = `["_dicyaninsiminput._tcp"]`.
+See `Demo/SimInputViewerDemo`: a full demo scene integrating every package output. Control window with Bonjour/manual connect, live status, and a body representation toggle (stick-figure wireframe or 3D humanoid), plus an immersive space containing `BodySkeletonEntity` (body wireframe), `HumanoidBodyEntity` (3D humanoid driven by the same body + hand stream), `HandGloveView.addHands` gloves driven through `MockHandTrackingController`, and a pinch-reactive target sphere showing gameplay logic on the same input path. Create a visionOS App target, add the `DicyaninSimulatorInput` product plus `DicyaninMockHandTracking` and `DicyaninHandGlove` from DicyaninMockHandTracking, drop the files in, and set Info.plist keys `NSLocalNetworkUsageDescription` and `NSBonjourServices` = `["_dicyaninsiminput._tcp"]`.
 
 ## visionOS app (simulator)
 
@@ -63,7 +63,10 @@ Hands then flow through `MockHandTrackingController.shared` exactly like the joy
 ```swift
 let joints = SimulatorInputController.shared.bodyJoints   // [ARKitBodyJoint: SIMD3<Float>]
 content.add(BodySkeletonEntity())                          // debug wireframe
+content.add(HumanoidBodyEntity())                          // 3D humanoid, body + hands retargeted
 ```
+
+`HumanoidBodyEntity` options: `worldOffset` (placement), `mirrored` (swap left/right so the figure moves like your reflection, default true), `handScale` (finger joint spread).
 
 Coordinates are head-relative from the tracked person's point of view: x right, y up, negative z in front. The head joint is the origin, so the person maps 1:1 onto the simulated wearer.
 

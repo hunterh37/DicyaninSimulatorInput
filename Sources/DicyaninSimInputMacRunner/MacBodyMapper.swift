@@ -18,8 +18,11 @@ enum MacBodyMapper {
         let forward: SIMD3<Float>
 
         func map(_ world: SIMD3<Float>) -> SIMD3<Float> {
+            // Mirror mapping: the person's forward (toward the camera) maps to
+            // +z, so the rendered skeleton faces the viewer and moving toward
+            // the webcam moves the joint toward the viewer, like a mirror.
             let d = world - origin
-            return SIMD3(simd_dot(d, right), simd_dot(d, up), -simd_dot(d, forward))
+            return SIMD3(simd_dot(d, right), simd_dot(d, up), simd_dot(d, forward))
         }
     }
 

@@ -1,6 +1,15 @@
 {
-  "originHash" : "58e1ffbb9c6c3a419bdc7a17cc17655f3107f3527dd3fc1d35591e29593ef0d7",
+  "originHash" : "a6e99df0c3a64ac35a5c35d59d6e8c77c00d5dd7e8b1a5e7fa65ccf187759d83",
   "pins" : [
+    {
+      "identity" : "dicyaninhumanoidmesh",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hunterh37/DicyaninHumanoidMesh.git",
+      "state" : {
+        "revision" : "69d0813b172415217d4c333a2597a2f1fc1ad0a2",
+        "version" : "1.1.1"
+      }
+    },
     {
       "identity" : "dicyaninlabsmocaprecording",
       "kind" : "remoteSourceControl",

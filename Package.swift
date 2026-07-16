@@ -5,8 +5,8 @@ let package = Package(
     name: "DicyaninSimulatorInput",
     platforms: [
         .iOS(.v18),
-        .visionOS(.v1),
-        .macOS(.v14)
+        .visionOS(.v2),
+        .macOS(.v15)
     ],
     products: [
         // Cross-platform wire format + TCP sender/receiver for body + hand poses.
@@ -21,7 +21,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/hunterh37/DicyaninLabsMoCapRecording.git", from: "1.7.2"),
-        .package(url: "https://github.com/hunterh37/DicyaninMockHandTracking.git", from: "3.10.0")
+        .package(url: "https://github.com/hunterh37/DicyaninMockHandTracking.git", from: "3.10.0"),
+        .package(url: "https://github.com/hunterh37/DicyaninHumanoidMesh.git", from: "1.1.1")
     ],
     targets: [
         .target(
@@ -50,7 +51,8 @@ let package = Package(
             name: "DicyaninSimulatorInput",
             dependencies: [
                 "DicyaninSimInputTransport",
-                .product(name: "DicyaninMockHandTracking", package: "DicyaninMockHandTracking")
+                .product(name: "DicyaninMockHandTracking", package: "DicyaninMockHandTracking"),
+                .product(name: "DicyaninHumanoidMesh", package: "DicyaninHumanoidMesh")
             ]
         ),
         .testTarget(

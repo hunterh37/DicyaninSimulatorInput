@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		33A6A99F7B74CF5116A442C8 /* SimInputImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3996514579F3DB75D7B35716 /* SimInputImmersiveView.swift */; };
 		4A6BDB2C648297593FD4085F /* DicyaninHandGlove in Frameworks */ = {isa = PBXBuildFile; productRef = B94153C75B34E02260DA51B6 /* DicyaninHandGlove */; };
+		5D0455382E6AF039660D2E1C /* ViewerSceneSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F90D7C19FEE6CD8CB608C6 /* ViewerSceneSettings.swift */; };
 		89E5513C4D09B0C71D0F2984 /* SimInputViewerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3172263A67C99E09FCD27D3 /* SimInputViewerControlView.swift */; };
 		CB60BEDFD8D820F52D086C8F /* PinchTargetEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85666CB3B6839148771655A4 /* PinchTargetEntity.swift */; };
 		D906DD2B41CABE70A5424364 /* DicyaninSimulatorInput in Frameworks */ = {isa = PBXBuildFile; productRef = 3653AE9098398BA09E8DDE5F /* DicyaninSimulatorInput */; };
@@ -21,6 +22,7 @@
 		6726E1638C4620E0308FB6AF /* SimInputViewerDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimInputViewerDemoApp.swift; sourceTree = "<group>"; };
 		85666CB3B6839148771655A4 /* PinchTargetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinchTargetEntity.swift; sourceTree = "<group>"; };
 		D3172263A67C99E09FCD27D3 /* SimInputViewerControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimInputViewerControlView.swift; sourceTree = "<group>"; };
+		F8F90D7C19FEE6CD8CB608C6 /* ViewerSceneSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewerSceneSettings.swift; sourceTree = "<group>"; };
 		FC548290DC97A22219F4999D /* SimInputViewerDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SimInputViewerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -53,6 +55,7 @@
 				3996514579F3DB75D7B35716 /* SimInputImmersiveView.swift */,
 				D3172263A67C99E09FCD27D3 /* SimInputViewerControlView.swift */,
 				6726E1638C4620E0308FB6AF /* SimInputViewerDemoApp.swift */,
+				F8F90D7C19FEE6CD8CB608C6 /* ViewerSceneSettings.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -139,6 +142,7 @@
 				33A6A99F7B74CF5116A442C8 /* SimInputImmersiveView.swift in Sources */,
 				89E5513C4D09B0C71D0F2984 /* SimInputViewerControlView.swift in Sources */,
 				FFDB980CD9AA4764F0653143 /* SimInputViewerDemoApp.swift in Sources */,
+				5D0455382E6AF039660D2E1C /* ViewerSceneSettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,7 +201,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -215,7 +219,7 @@
 				SDKROOT = xros;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 7;
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -278,7 +282,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -296,7 +300,7 @@
 				SDKROOT = xros;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 7;
-				XROS_DEPLOYMENT_TARGET = 1.0;
+				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
