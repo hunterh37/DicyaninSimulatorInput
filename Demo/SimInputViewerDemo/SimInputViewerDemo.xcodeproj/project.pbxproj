@@ -1,0 +1,357 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		33A6A99F7B74CF5116A442C8 /* SimInputImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3996514579F3DB75D7B35716 /* SimInputImmersiveView.swift */; };
+		4A6BDB2C648297593FD4085F /* DicyaninHandGlove in Frameworks */ = {isa = PBXBuildFile; productRef = B94153C75B34E02260DA51B6 /* DicyaninHandGlove */; };
+		89E5513C4D09B0C71D0F2984 /* SimInputViewerControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3172263A67C99E09FCD27D3 /* SimInputViewerControlView.swift */; };
+		CB60BEDFD8D820F52D086C8F /* PinchTargetEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85666CB3B6839148771655A4 /* PinchTargetEntity.swift */; };
+		D906DD2B41CABE70A5424364 /* DicyaninSimulatorInput in Frameworks */ = {isa = PBXBuildFile; productRef = 3653AE9098398BA09E8DDE5F /* DicyaninSimulatorInput */; };
+		FFDB980CD9AA4764F0653143 /* SimInputViewerDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6726E1638C4620E0308FB6AF /* SimInputViewerDemoApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1490FFADE3362F435606AEB6 /* DicyaninSimulatorInput */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DicyaninSimulatorInput; path = ../..; sourceTree = SOURCE_ROOT; };
+		3996514579F3DB75D7B35716 /* SimInputImmersiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimInputImmersiveView.swift; sourceTree = "<group>"; };
+		6726E1638C4620E0308FB6AF /* SimInputViewerDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimInputViewerDemoApp.swift; sourceTree = "<group>"; };
+		85666CB3B6839148771655A4 /* PinchTargetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinchTargetEntity.swift; sourceTree = "<group>"; };
+		D3172263A67C99E09FCD27D3 /* SimInputViewerControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimInputViewerControlView.swift; sourceTree = "<group>"; };
+		FC548290DC97A22219F4999D /* SimInputViewerDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SimInputViewerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A228A5BCCED0C9E66A8677E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D906DD2B41CABE70A5424364 /* DicyaninSimulatorInput in Frameworks */,
+				4A6BDB2C648297593FD4085F /* DicyaninHandGlove in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3DF524DA94C4E0EE58F5DB7B = {
+			isa = PBXGroup;
+			children = (
+				7A6BE78A38C8543674EB6984 /* Packages */,
+				4900CAFC05932A8B3C433424 /* Sources */,
+				CC531132A06B81E7C4879BB0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4900CAFC05932A8B3C433424 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				85666CB3B6839148771655A4 /* PinchTargetEntity.swift */,
+				3996514579F3DB75D7B35716 /* SimInputImmersiveView.swift */,
+				D3172263A67C99E09FCD27D3 /* SimInputViewerControlView.swift */,
+				6726E1638C4620E0308FB6AF /* SimInputViewerDemoApp.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		7A6BE78A38C8543674EB6984 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				1490FFADE3362F435606AEB6 /* DicyaninSimulatorInput */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		CC531132A06B81E7C4879BB0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FC548290DC97A22219F4999D /* SimInputViewerDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BC6F8ED0C477447ADF2E5037 /* SimInputViewerDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FC706495BBD7E0BA665CE306 /* Build configuration list for PBXNativeTarget "SimInputViewerDemo" */;
+			buildPhases = (
+				D124A9DB36AE532386DC166D /* Sources */,
+				A228A5BCCED0C9E66A8677E3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SimInputViewerDemo;
+			packageProductDependencies = (
+				3653AE9098398BA09E8DDE5F /* DicyaninSimulatorInput */,
+				B94153C75B34E02260DA51B6 /* DicyaninHandGlove */,
+			);
+			productName = SimInputViewerDemo;
+			productReference = FC548290DC97A22219F4999D /* SimInputViewerDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		48B7C544BD8183506263C531 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 2AE85AED221C6E3C4DE952AA /* Build configuration list for PBXProject "SimInputViewerDemo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 3DF524DA94C4E0EE58F5DB7B;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DDE08C0ED06B292EB592BF7D /* XCRemoteSwiftPackageReference "DicyaninMockHandTracking" */,
+				4DB88B7D39DE397305FBB55B /* XCLocalSwiftPackageReference "../..//" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CC531132A06B81E7C4879BB0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BC6F8ED0C477447ADF2E5037 /* SimInputViewerDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D124A9DB36AE532386DC166D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB60BEDFD8D820F52D086C8F /* PinchTargetEntity.swift in Sources */,
+				33A6A99F7B74CF5116A442C8 /* SimInputImmersiveView.swift in Sources */,
+				89E5513C4D09B0C71D0F2984 /* SimInputViewerControlView.swift in Sources */,
+				FFDB980CD9AA4764F0653143 /* SimInputViewerDemoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		65995C0D7F1ED269417BEA3B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = xros;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Release;
+		};
+		7AED18BC2E1DC753CD421B8E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dicyaninlabs.siminputviewerdemo;
+				SDKROOT = xros;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Debug;
+		};
+		A53D76FC580072AB46C7F0E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = xros;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Debug;
+		};
+		B7B9D0045012302E6D0079DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dicyaninlabs.siminputviewerdemo;
+				SDKROOT = xros;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2AE85AED221C6E3C4DE952AA /* Build configuration list for PBXProject "SimInputViewerDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A53D76FC580072AB46C7F0E2 /* Debug */,
+				65995C0D7F1ED269417BEA3B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FC706495BBD7E0BA665CE306 /* Build configuration list for PBXNativeTarget "SimInputViewerDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7AED18BC2E1DC753CD421B8E /* Debug */,
+				B7B9D0045012302E6D0079DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		4DB88B7D39DE397305FBB55B /* XCLocalSwiftPackageReference "../..//" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../..//";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DDE08C0ED06B292EB592BF7D /* XCRemoteSwiftPackageReference "DicyaninMockHandTracking" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hunterh37/DicyaninMockHandTracking.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3653AE9098398BA09E8DDE5F /* DicyaninSimulatorInput */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DicyaninSimulatorInput;
+		};
+		B94153C75B34E02260DA51B6 /* DicyaninHandGlove */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DDE08C0ED06B292EB592BF7D /* XCRemoteSwiftPackageReference "DicyaninMockHandTracking" */;
+			productName = DicyaninHandGlove;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 48B7C544BD8183506263C531 /* Project object */;
+}

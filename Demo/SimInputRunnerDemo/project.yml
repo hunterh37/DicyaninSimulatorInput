@@ -1,0 +1,40 @@
+name: SimInputRunnerDemo
+options:
+  bundleIdPrefix: com.dicyaninlabs
+  deploymentTarget:
+    iOS: "18.0"
+packages:
+  DicyaninSimulatorInput:
+    path: ../../
+targets:
+  SimInputRunnerDemo:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - Sources
+    dependencies:
+      - package: DicyaninSimulatorInput
+        product: DicyaninSimInputRunner
+    info:
+      path: Resources/Info.plist
+      properties:
+        CFBundleDisplayName: SimInput Runner
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        NSCameraUsageDescription: "Tracks your body and hands to drive the visionOS simulator."
+        NSLocalNetworkUsageDescription: "Streams poses to the visionOS simulator on your Mac."
+        NSBonjourServices:
+          - _dicyaninsiminput._tcp
+        UIRequiredDeviceCapabilities:
+          - arkit
+          - arm64
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dicyaninlabs.siminputrunnerdemo
+        GENERATE_INFOPLIST_FILE: NO
+        TARGETED_DEVICE_FAMILY: 1
+        SWIFT_VERSION: "6.0"

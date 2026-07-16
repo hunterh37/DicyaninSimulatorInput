@@ -13,6 +13,8 @@ let package = Package(
         .library(name: "DicyaninSimInputTransport", targets: ["DicyaninSimInputTransport"]),
         // iPhone runner: ARKit body tracking + Vision hand tracking, broadcast over localhost.
         .library(name: "DicyaninSimInputRunner", targets: ["DicyaninSimInputRunner"]),
+        // Mac runner: webcam Vision 3D body pose + hand tracking, broadcast over localhost.
+        .library(name: "DicyaninSimInputMacRunner", targets: ["DicyaninSimInputMacRunner"]),
         // visionOS consumer: receives poses in the simulator and feeds the mock
         // hand-tracking controller plus a published body skeleton.
         .library(name: "DicyaninSimulatorInput", targets: ["DicyaninSimulatorInput"])
@@ -34,6 +36,14 @@ let package = Package(
             dependencies: [
                 "DicyaninSimInputTransport",
                 .product(name: "DicyaninLabsMoCapRecording", package: "DicyaninLabsMoCapRecording")
+            ]
+        ),
+        .target(
+            name: "DicyaninSimInputMacRunner",
+            dependencies: [
+                "DicyaninSimInputTransport",
+                .product(name: "DicyaninLabsMoCapRecording", package: "DicyaninLabsMoCapRecording"),
+                .product(name: "DicyaninHandTrackingTransport", package: "DicyaninMockHandTracking")
             ]
         ),
         .target(

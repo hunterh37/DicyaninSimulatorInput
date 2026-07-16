@@ -1,0 +1,43 @@
+name: SimInputMacRunnerDemo
+options:
+  bundleIdPrefix: com.dicyaninlabs
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+packages:
+  DicyaninSimulatorInput:
+    path: ../../
+targets:
+  SimInputMacRunnerDemo:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - Sources
+    dependencies:
+      - package: DicyaninSimulatorInput
+        product: DicyaninSimInputMacRunner
+    info:
+      path: Resources/Info.plist
+      properties:
+        CFBundleDisplayName: SimInput Mac Runner
+        LSMinimumSystemVersion: "14.0"
+        NSCameraUsageDescription: "Tracks your body and hands with the webcam to drive the visionOS simulator."
+        NSLocalNetworkUsageDescription: "Streams poses to the visionOS simulator on this Mac."
+        NSBonjourServices:
+          - _dicyaninsiminput._tcp
+    entitlements:
+      path: Resources/SimInputMacRunnerDemo.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.device.camera: true
+        com.apple.security.network.server: true
+        com.apple.security.network.client: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dicyaninlabs.siminputmacrunnerdemo
+        GENERATE_INFOPLIST_FILE: NO
+        SWIFT_VERSION: "6.0"
+        CODE_SIGNING_ALLOWED: YES
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_HARDENED_RUNTIME: YES

@@ -1,0 +1,24 @@
+{
+  "originHash" : "09734dcca4e184428344d06f7dbb5c34e2e126c5c285c711d96b55bef3223472",
+  "pins" : [
+    {
+      "identity" : "dicyaninlabsmocaprecording",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hunterh37/DicyaninLabsMoCapRecording.git",
+      "state" : {
+        "revision" : "53c3f0f6e0ae6b8f77790500db7c16b08c08135c",
+        "version" : "1.7.2"
+      }
+    },
+    {
+      "identity" : "dicyaninmockhandtracking",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hunterh37/DicyaninMockHandTracking.git",
+      "state" : {
+        "revision" : "58cb2e86bb9c81497d050b2b93ffd49e8934fb3b",
+        "version" : "3.10.0"
+      }
+    }
+  ],
+  "version" : 3
+}

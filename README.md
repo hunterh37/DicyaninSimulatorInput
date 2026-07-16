@@ -11,6 +11,7 @@ Built from proven pieces:
 
 - `DicyaninSimInputTransport`: `SimInputPacket` (body joints in `ARKitBodyJoint.allCases` order + embedded `HandPosePacket`), `SimInputSender`, `SimInputReceiver`. iOS, visionOS, macOS.
 - `DicyaninSimInputRunner` (iOS): `SimInputBroadcaster` (capture + broadcast) and `SimInputRunnerView` (camera preview, wireframe overlays, server status).
+- `DicyaninSimInputMacRunner` (macOS 14+): `MacSimInputBroadcaster` (webcam + Vision 3D body pose + hand pose, broadcast) and `SimInputMacRunnerView` (preview, overlays, tuning). No iPhone needed: everything runs on the Mac next to the simulator.
 - `DicyaninSimulatorInput` (visionOS): `SimulatorInputController.shared` (receive + feed `MockHandTrackingController`) and `BodySkeletonEntity` (ECS-driven debug skeleton).
 
 ## iPhone runner app
@@ -25,6 +26,25 @@ var body: some Scene {
 ```
 
 Info.plist: `NSCameraUsageDescription`, `NSLocalNetworkUsageDescription`, `NSBonjourServices` = `["_dicyaninsiminput._tcp"]`.
+
+## Mac webcam runner app
+
+See `Demo/SimInputMacRunnerDemo`. Runs entirely on the Mac: the webcam feeds `VNDetectHumanBodyPose3DRequest` (full 3D body, camera-relative meters) and `VNDetectHumanHandPoseRequest` (21-joint hands), mapped into the same head-relative person frame and broadcast as `SimInputPacket`s on the same port and Bonjour service as the iPhone runner, so the visionOS consumer works with either unchanged.
+
+```swift
+@StateObject private var broadcaster = MacSimInputBroadcaster()
+var body: some Scene {
+    WindowGroup { SimInputMacRunnerView(broadcaster: broadcaster) }
+}
+```
+
+Info.plist: `NSCameraUsageDescription`, `NSLocalNetworkUsageDescription`, `NSBonjourServices` = `["_dicyaninsiminput._tcp"]`. Sandbox entitlements: camera, network server + client. Generate the project with `xcodegen generate` inside `Demo/SimInputMacRunnerDemo`.
+
+Stand back far enough that the camera sees your whole body for body tracking; hands track at any distance. Body depth comes from Vision's 3D estimate; hand depth is approximated from apparent hand size like the WebcamHandRunner.
+
+## visionOS viewer app
+
+See `Demo/SimInputViewerDemo`: a full demo scene integrating every package output. Control window with Bonjour/manual connect and live status, plus an immersive space containing `BodySkeletonEntity` (body wireframe), `HandGloveView.addHands` gloves driven through `MockHandTrackingController`, and a pinch-reactive target sphere showing gameplay logic on the same input path. Create a visionOS App target, add the `DicyaninSimulatorInput` product plus `DicyaninMockHandTracking` and `DicyaninHandGlove` from DicyaninMockHandTracking, drop the files in, and set Info.plist keys `NSLocalNetworkUsageDescription` and `NSBonjourServices` = `["_dicyaninsiminput._tcp"]`.
 
 ## visionOS app (simulator)
 

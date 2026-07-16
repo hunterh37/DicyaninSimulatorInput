@@ -1,0 +1,38 @@
+name: SimInputViewerDemo
+options:
+  bundleIdPrefix: com.dicyaninlabs
+  deploymentTarget:
+    visionOS: "1.0"
+packages:
+  DicyaninSimulatorInput:
+    path: ../../
+  DicyaninMockHandTracking:
+    url: https://github.com/hunterh37/DicyaninMockHandTracking.git
+    from: 3.10.0
+targets:
+  SimInputViewerDemo:
+    type: application
+    platform: visionOS
+    deploymentTarget: "1.0"
+    sources:
+      - Sources
+    dependencies:
+      - package: DicyaninSimulatorInput
+        product: DicyaninSimulatorInput
+      - package: DicyaninMockHandTracking
+        product: DicyaninHandGlove
+    info:
+      path: Resources/Info.plist
+      properties:
+        CFBundleDisplayName: SimInput Viewer
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: true
+          UIApplicationPreferredDefaultSceneSessionRole: UIWindowSceneSessionRoleApplication
+        NSLocalNetworkUsageDescription: "Receives poses from the iPhone runner on the same Wi-Fi."
+        NSBonjourServices:
+          - _dicyaninsiminput._tcp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dicyaninlabs.siminputviewerdemo
+        GENERATE_INFOPLIST_FILE: NO
+        SWIFT_VERSION: "6.0"
