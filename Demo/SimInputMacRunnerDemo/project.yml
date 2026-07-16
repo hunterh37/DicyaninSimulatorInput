@@ -2,7 +2,7 @@ name: SimInputMacRunnerDemo
 options:
   bundleIdPrefix: com.dicyaninlabs
   deploymentTarget:
-    macOS: "14.0"
+    macOS: "15.0"
   createIntermediateGroups: true
 packages:
   DicyaninSimulatorInput:
@@ -11,7 +11,7 @@ targets:
   SimInputMacRunnerDemo:
     type: application
     platform: macOS
-    deploymentTarget: "14.0"
+    deploymentTarget: "15.0"
     sources:
       - Sources
     dependencies:
@@ -21,7 +21,7 @@ targets:
       path: Resources/Info.plist
       properties:
         CFBundleDisplayName: SimInput Mac Runner
-        LSMinimumSystemVersion: "14.0"
+        LSMinimumSystemVersion: "15.0"
         NSCameraUsageDescription: "Tracks your body and hands with the webcam to drive the visionOS simulator."
         NSLocalNetworkUsageDescription: "Streams poses to the visionOS simulator on this Mac."
         NSBonjourServices:
