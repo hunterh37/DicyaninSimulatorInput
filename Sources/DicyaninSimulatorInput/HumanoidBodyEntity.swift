@@ -33,6 +33,11 @@ public final class HumanoidBodyEntity: Entity {
 
     public required init() {
         humanoid = HumanoidEntity.create(pose: .aPose)
+        // The mesh is authored facing -z (its left arm at local -x). The
+        // received person frame faces +z (toward the viewer), so turn the
+        // figure around to face the viewer like a mirror. The retarget system
+        // folds this root rotation into every bone alignment.
+        humanoid.orientation = simd_quatf(angle: .pi, axis: [0, 1, 0])
         super.init()
         HumanoidBodySystem.registerIfNeeded()
         components.set(HumanoidBodyComponent())
@@ -79,7 +84,10 @@ final class HumanoidHandRig {
         }
         container.isEnabled = true
         container.position = position
-        let wristInverse = wrist.inverse
+        // Offsets stay in the received (mirror) space so the hand keeps its
+        // real-world orientation; rotating into the wrist frame would render
+        // every hand in one canonical pose regardless of how it is turned.
+        let wristPosition = SIMD3(wrist.columns.3.x, wrist.columns.3.y, wrist.columns.3.z)
         for (name, transform) in joints {
             let sphere = jointSpheres[name] ?? {
                 let s = ModelEntity(mesh: Self.sphereMesh, materials: [Self.material])
@@ -87,8 +95,8 @@ final class HumanoidHandRig {
                 container.addChild(s)
                 return s
             }()
-            let local = wristInverse * transform
-            sphere.position = SIMD3(local.columns.3.x, local.columns.3.y, local.columns.3.z) * scale
+            let p = SIMD3(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
+            sphere.position = (p - wristPosition) * scale
         }
     }
 
@@ -162,10 +170,14 @@ public struct HumanoidBodySystem: System {
         let rightShinData: (ARKitBodyJoint, ARKitBodyJoint) =
             root.mirrored ? (.leftLeg, .leftFoot) : (.rightLeg, .rightFoot)
 
+        // Root of every chain is the humanoid's own rotation (it faces the
+        // viewer), so received directions get expressed in mesh space.
+        let rootWorld = humanoid.orientation
+
         // Torso: hips up to the base of the neck. Rest direction is +Y.
         let torsoWorld = orient(joint: "joint_torso", in: humanoid,
                                 from: joints[.hips], to: joints[.neck1] ?? joints[.head],
-                                rest: [0, 1, 0], parentWorld: simd_quatf())
+                                rest: [0, 1, 0], parentWorld: rootWorld)
 
         // Arms: two-segment chains under the torso pivot. Rest direction -Y.
         for (upper, lower, armData, forearmData) in [
@@ -187,7 +199,7 @@ public struct HumanoidBodySystem: System {
         ] {
             let thighWorld = orient(joint: upper, in: humanoid,
                                     from: joints[thighData.0], to: joints[thighData.1],
-                                    rest: [0, -1, 0], parentWorld: simd_quatf())
+                                    rest: [0, -1, 0], parentWorld: rootWorld)
             _ = orient(joint: lower, in: humanoid,
                        from: joints[shinData.0], to: joints[shinData.1],
                        rest: [0, -1, 0], parentWorld: thighWorld)

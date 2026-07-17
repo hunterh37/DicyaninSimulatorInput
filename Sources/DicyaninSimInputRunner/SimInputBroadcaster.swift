@@ -122,8 +122,9 @@ public final class SimInputBroadcaster: ObservableObject {
                                                 yAxis: frame.up,
                                                 zAxis: -frame.forward)
         } else {
+            // Keep the tracker's reference across momentary tracking loss so
+            // the person's room position never re-zeros mid-session.
             lastRootOffset = nil
-            rootTracker.reset()
         }
         broadcastIfDue()
     }

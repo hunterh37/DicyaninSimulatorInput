@@ -83,15 +83,13 @@ final class MacVisionPipeline: NSObject, AVCaptureVideoDataOutputSampleBufferDel
                                                         yAxis: frame.up,
                                                         zAxis: frame.forward)
                 } else {
+                    // Keep the root tracker's reference: a momentary tracking
+                    // loss must not re-zero the person's room position.
                     lastBodyJoints = nil
-                    lastRootOffset = nil
-                    rootTracker.reset()
                 }
                 lastBodyOverlay = MacBodyMapper.overlayPoints(body, mirrored: mirrored)
             } else {
                 lastBodyJoints = nil
-                lastRootOffset = nil
-                rootTracker.reset()
                 lastBodyOverlay = [:]
             }
         }
