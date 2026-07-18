@@ -28,6 +28,13 @@ public final class HumanoidBodyEntity: Entity {
     /// Scale applied to the wrist-relative finger joint offsets.
     public var handScale: Float = 1.0
 
+    /// Turn the figure to match the tracked person's body yaw (from
+    /// ``SimulatorInputController/bodyYaw``). Off keeps it facing the viewer.
+    public var tracksFacing = true
+
+    /// Sign of the applied yaw. Flip if the figure turns opposite the person.
+    public var facingSign: Float = 1
+
     fileprivate let humanoid: Entity
     fileprivate var handRigs: [HumanoidHandRig] = []
 
@@ -152,6 +159,16 @@ public struct HumanoidBodySystem: System {
         humanoid.position = simd_mix(humanoid.position, targetPosition,
                                      SIMD3<Float>(repeating: Self.smoothing))
 
+        // Body yaw: base flip (mesh authored facing -z, turned to face the
+        // viewer) plus the tracked person's turn. Mirroring reflects the turn,
+        // so the yaw negates when the figure is mirrored. Slerp-smoothed on top
+        // of the estimator's own smoothing so heading never snaps.
+        let yaw = root.tracksFacing
+            ? SimulatorInputController.shared.bodyYaw * root.facingSign * (root.mirrored ? -1 : 1)
+            : 0
+        let targetOrientation = simd_quatf(angle: .pi + yaw, axis: [0, 1, 0])
+        humanoid.orientation = simd_slerp(humanoid.orientation, targetOrientation, Self.smoothing)
+
         // Data joints per geometry side. mirrored swaps the person's sides.
         let leftArmData: (ARKitBodyJoint, ARKitBodyJoint) =
             root.mirrored ? (.rightArm, .rightForearm) : (.leftArm, .leftForearm)
@@ -179,11 +196,22 @@ public struct HumanoidBodySystem: System {
                                 from: joints[.hips], to: joints[.neck1] ?? joints[.head],
                                 rest: [0, 1, 0], parentWorld: rootWorld)
 
-        // Arms: two-segment chains under the torso pivot. Rest direction -Y.
+        // Arms: two-bone IK per arm. The chain starts at the mesh's own
+        // shoulder pivot and reaches for the received wrist offset scaled to
+        // the mesh arm length, with the bend plane taken from the received
+        // elbow. Direction-only retargeting let proportion mismatches between
+        // the tracked person and the mesh push the elbow into the torso; IK
+        // keeps the elbow on the mesh's own reachable sphere. Falls back to
+        // direction alignment when the wrist is untracked.
         for (upper, lower, armData, forearmData) in [
             ("joint_upperArm_L", "joint_forearm_L", leftArmData, leftForearmData),
             ("joint_upperArm_R", "joint_forearm_R", rightArmData, rightForearmData)
         ] {
+            if solveArmIK(upper: upper, lower: lower, in: humanoid,
+                          shoulder: joints[armData.0], elbow: joints[armData.1],
+                          wrist: joints[forearmData.1], parentWorld: torsoWorld) {
+                continue
+            }
             let upperWorld = orient(joint: upper, in: humanoid,
                                     from: joints[armData.0], to: joints[armData.1],
                                     rest: [0, -1, 0], parentWorld: torsoWorld)
@@ -261,6 +289,67 @@ public struct HumanoidBodySystem: System {
         }
         joint.orientation = simd_slerp(joint.orientation, targetLocal, Self.smoothing)
         return parentWorld * joint.orientation
+    }
+
+    /// Analytic two-bone IK for one arm, solved in the torso joint's frame.
+    /// Shoulder/elbow/wrist are received head-relative positions; only their
+    /// relative offsets are used, scaled so the received arm span matches the
+    /// mesh arm span. Returns false when inputs are missing or degenerate so
+    /// the caller can fall back to direction alignment.
+    @MainActor
+    private func solveArmIK(upper upperName: String, lower lowerName: String,
+                            in humanoid: Entity,
+                            shoulder: SIMD3<Float>?, elbow: SIMD3<Float>?,
+                            wrist: SIMD3<Float>?,
+                            parentWorld: simd_quatf) -> Bool {
+        guard let shoulder, let elbow, let wrist,
+              Self.isValid(shoulder), Self.isValid(elbow), Self.isValid(wrist),
+              let upperJoint = humanoid.findEntity(named: upperName),
+              let lowerJoint = humanoid.findEntity(named: lowerName) else { return false }
+
+        let l1 = simd_length(lowerJoint.position)       // shoulder pivot -> elbow pivot
+        let l2 = Self.forearmLength                     // elbow pivot -> wrist
+        let dataUpper = simd_length(elbow - shoulder)
+        let dataLower = simd_length(wrist - elbow)
+        guard l1 > 0.01, dataUpper > 0.02, dataLower > 0.02 else { return false }
+        let scale = (l1 + l2) / (dataUpper + dataLower)
+
+        // Wrist target and elbow hint in the torso frame, shoulder-relative.
+        let target = parentWorld.inverse.act((wrist - shoulder) * scale)
+        let elbowHint = parentWorld.inverse.act((elbow - shoulder) * scale)
+        let rawDistance = simd_length(target)
+        guard rawDistance > 0.001 else { return false }
+        let targetDir = target / rawDistance
+        let distance = simd_clamp(rawDistance, abs(l1 - l2) + 0.001, l1 + l2 - 0.001)
+
+        // Bend plane: component of the received elbow off the shoulder-wrist
+        // line. Near-straight arms fall back to bending backward (mesh faces
+        // -z, so the elbow points toward +z in the torso frame).
+        var bend = elbowHint - simd_dot(elbowHint, targetDir) * targetDir
+        if simd_length_squared(bend) < 1e-6 {
+            let fallback = SIMD3<Float>(0, 0, 1)
+            bend = fallback - simd_dot(fallback, targetDir) * targetDir
+        }
+        guard simd_length_squared(bend) > 1e-8 else { return false }
+        let bendDir = simd_normalize(bend)
+
+        // Law of cosines: elbow at distance `along` toward the target, lifted
+        // `lift` into the bend plane.
+        let along = simd_clamp((distance * distance + l1 * l1 - l2 * l2) / (2 * distance), -l1, l1)
+        let lift = max(0, l1 * l1 - along * along).squareRoot()
+        let elbowPos = targetDir * along + bendDir * lift
+
+        let upperDir = simd_normalize(elbowPos)
+        let lowerDirInTorso = simd_normalize(targetDir * distance - elbowPos)
+
+        let upperTarget = Self.quatAligning([0, -1, 0], upperDir)
+        upperJoint.orientation = simd_slerp(upperJoint.orientation, upperTarget, Self.smoothing)
+
+        let upperWorld = parentWorld * upperJoint.orientation
+        let lowerDirInUpper = upperWorld.inverse.act(parentWorld.act(lowerDirInTorso))
+        let lowerTarget = Self.quatAligning([0, -1, 0], lowerDirInUpper)
+        lowerJoint.orientation = simd_slerp(lowerJoint.orientation, lowerTarget, Self.smoothing)
+        return true
     }
 
     /// Minimal-arc quaternion rotating unit vector `a` onto unit vector `b`.

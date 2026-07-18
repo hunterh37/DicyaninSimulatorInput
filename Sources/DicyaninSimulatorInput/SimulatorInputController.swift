@@ -39,9 +39,30 @@ public final class SimulatorInputController: ObservableObject {
     /// that sends it connects.
     @Published public private(set) var bodyRootOffset: SIMD3<Float> = .zero
 
+    /// Smoothed body yaw of the tracked person in radians, in the head-relative
+    /// frame (0 = squarely facing the camera, positive = turning so the right
+    /// shoulder rotates away from the camera). Drives the humanoid root so the
+    /// figure turns with the person. Zero until a tracked body is received.
+    @Published public private(set) var bodyYaw: Float = 0
+
+    /// Monocular depth pass: rebuilds arm-joint z from bone-length
+    /// foreshortening so arms reaching toward the camera extend instead of
+    /// collapsing onto the torso plane. Set to nil to publish planar arms.
+    public var depthReconstructor: LimbDepthReconstructor? = LimbDepthReconstructor()
+
+    /// Body-yaw estimator from the shoulder/hip lines. Set to nil to keep the
+    /// figure squarely facing the camera.
+    public var facingEstimator: BodyFacingEstimator? = BodyFacingEstimator()
+
     /// Whether received hand packets should be forwarded into
     /// `MockHandTrackingController.shared`. On by default.
     public var drivesMockHands = true
+
+    /// Anatomical filter applied to every received body frame: implausible
+    /// joints (off-camera legs reported above the head, teleporting limbs)
+    /// are rejected and extrapolated from their nearest valid neighbor. Set
+    /// to nil to publish raw joints.
+    public var sanitizer: BodyPoseSanitizer? = BodyPoseSanitizer()
 
     private var receiver: SimInputReceiver?
     private var task: Task<Void, Never>?
@@ -82,6 +103,10 @@ public final class SimulatorInputController: ObservableObject {
         task = nil
         isConnected = false
         isBodyTracked = false
+        bodyYaw = 0
+        sanitizer?.reset()
+        depthReconstructor?.reset()
+        facingEstimator?.reset()
     }
 
     /// Apply one packet: body joints published here, hands forwarded to the
@@ -90,7 +115,12 @@ public final class SimulatorInputController: ObservableObject {
     public func apply(_ packet: SimInputPacket) {
         isBodyTracked = packet.bodyTracked
         if let joints = packet.bodyJointsByID() {
-            bodyJoints = joints
+            var frame = sanitizer != nil ? sanitizer!.sanitize(joints) : joints
+            depthReconstructor?.reconstruct(&frame)
+            if let facing = facingEstimator?.update(frame) {
+                bodyYaw = facing
+            }
+            bodyJoints = frame
         }
         if packet.bodyTracked, let offset = packet.rootOffset {
             bodyRootOffset = offset
