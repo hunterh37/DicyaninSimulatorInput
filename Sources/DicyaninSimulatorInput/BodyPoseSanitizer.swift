@@ -69,12 +69,14 @@ public struct BodyPoseSanitizer {
         t[.rightArm] = c(0.08, [1, 0, 0], .none, 0)
         t[.leftUpLeg] = c(0.10, [-1, -0.2, 0], .none, 0)
         t[.rightUpLeg] = c(0.10, [1, -0.2, 0], .none, 0)
-        // Arms can point anywhere from the shoulder; elbows and wrists hinge
-        // within a cone of the segment above them.
-        t[.leftForearm] = c(0.28, [-0.2, -1, 0], .parentBone, 160)
-        t[.rightForearm] = c(0.28, [0.2, -1, 0], .parentBone, 160)
-        t[.leftHand] = c(0.26, [-0.1, -1, 0], .parentBone, 95)
-        t[.rightHand] = c(0.26, [0.1, -1, 0], .parentBone, 95)
+        // Arms can point anywhere from the shoulder (cross-body reach swings
+        // the upper arm almost fully opposite the clavicle line, so only a
+        // near-exact reversal is rejected); wrists hinge within deep elbow
+        // flexion (about 145 degrees anatomically).
+        t[.leftForearm] = c(0.28, [-0.2, -1, 0], .parentBone, 175)
+        t[.rightForearm] = c(0.28, [0.2, -1, 0], .parentBone, 175)
+        t[.leftHand] = c(0.26, [-0.1, -1, 0], .parentBone, 140)
+        t[.rightHand] = c(0.26, [0.1, -1, 0], .parentBone, 140)
         // Legs: a thigh more than 120 degrees away from straight-down (a high
         // kick is about 120) is a bad detection, which is exactly the
         // legs-above-the-head glitch when they are out of the webcam view.
@@ -93,6 +95,10 @@ public struct BodyPoseSanitizer {
     private static let maxLengthRatio: Float = 2.2
     /// Max per-frame joint travel; larger jumps are treated as glitches.
     private static let maxJumpPerFrame: Float = 0.6
+    /// After this many consecutive rejections the velocity gate is skipped:
+    /// a joint that decayed toward rest while its raw data stayed valid but
+    /// far away would otherwise fail the jump gate forever and never recover.
+    private static let staleRejectionFrames = 10
     /// Ease factor per frame from the held offset toward the rest offset.
     private static let restDecay: Float = 0.04
     /// Ease factor per frame toward newly accepted data.
@@ -106,6 +112,8 @@ public struct BodyPoseSanitizer {
     private var heldOffsets: [ARKitBodyJoint: SIMD3<Float>] = [:]
     private var heldHips: SIMD3<Float>?
     private var lastOutput: [ARKitBodyJoint: SIMD3<Float>] = [:]
+    /// Consecutive frames each joint has been rejected or undetected.
+    private var rejectionStreak: [ARKitBodyJoint: Int] = [:]
 
     private static func isDetected(_ p: SIMD3<Float>?) -> Bool {
         guard let p else { return false }
@@ -150,14 +158,17 @@ public struct BodyPoseSanitizer {
             let restOffset = Self.restOffset(joint, constraint: constraint, torsoUp: torsoUp)
             var offset = heldOffsets[joint] ?? restOffset
 
+            let stale = (rejectionStreak[joint] ?? 0) >= Self.staleRejectionFrames
             if let candidate = Self.acceptedOffset(joint, constraint: constraint,
                                                    raw: raw, parentPos: parentPos,
                                                    parentBoneDir: Self.parentBoneDir(joint, out: out),
                                                    torsoUp: torsoUp,
-                                                   lastPos: lastOutput[joint]) {
+                                                   lastPos: stale ? nil : lastOutput[joint]) {
                 offset = simd_mix(offset, candidate, SIMD3(repeating: Self.acceptSmoothing))
+                rejectionStreak[joint] = 0
             } else {
                 offset = simd_mix(offset, restOffset, SIMD3(repeating: Self.restDecay))
+                rejectionStreak[joint] = (rejectionStreak[joint] ?? 0) + 1
             }
             heldOffsets[joint] = offset
             out[joint] = parentPos + offset
@@ -172,6 +183,7 @@ public struct BodyPoseSanitizer {
         heldOffsets.removeAll()
         heldHips = nil
         lastOutput.removeAll()
+        rejectionStreak.removeAll()
     }
 
     /// Raw parent-relative offset if it passes every gate, else nil.
